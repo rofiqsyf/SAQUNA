@@ -31,6 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'fakultas' => trim($_POST['fakultas'] ?? ''),
                 'program_studi' => trim($_POST['program_studi'] ?? ''),
                 'status' => $_POST['status'] ?? 'aktif',
+                'tempat_tanggal_lahir' => trim($_POST['tempat_tanggal_lahir'] ?? ''),
+                'jenis_kelamin' => trim($_POST['jenis_kelamin'] ?? ''),
+                'no_hp' => trim($_POST['no_hp'] ?? ''),
+                'alamat_asal' => trim($_POST['alamat_asal'] ?? ''),
+                'domisili' => trim($_POST['domisili'] ?? ''),
                 'foto' => null,
             ];
             
@@ -480,11 +485,35 @@ require_once __DIR__ . '/components/header.php';
                     </select>
                 </div>
                 <div>
+                    <label class="block text-sm font-semibold text-primary mb-2">Tempat, Tgl Lahir</label>
+                    <input type="text" name="tempat_tanggal_lahir" id="edit_tempat_tanggal_lahir" placeholder="Contoh: Jakarta, 01 Januari 1980" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-primary mb-2">Jenis Kelamin</label>
+                    <select name="jenis_kelamin" id="edit_jenis_kelamin" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none text-sm">
+                        <option value="">-- Pilih --</option>
+                        <option value="Laki-laki">Laki-laki</option>
+                        <option value="Perempuan">Perempuan</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-primary mb-2">No HP</label>
+                    <input type="text" name="no_hp" id="edit_no_hp" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none text-sm">
+                </div>
+                <div>
                     <label class="block text-sm font-semibold text-primary mb-2">Status</label>
                     <select name="status" id="edit_status" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none text-sm">
                         <option value="aktif">Aktif</option>
                         <option value="nonaktif">Non-Aktif</option>
                     </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-primary mb-2">Alamat Asal</label>
+                    <textarea name="alamat_asal" id="edit_alamat_asal" rows="2" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none text-sm"></textarea>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-primary mb-2">Domisili Saat Ini</label>
+                    <textarea name="domisili" id="edit_domisili" rows="2" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none text-sm"></textarea>
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-primary mb-2">Foto Profil (kosongkan jika tidak diubah)</label>
@@ -636,6 +665,11 @@ function bukaModalEdit(dosenData, mkIds) {
     document.getElementById('edit_nama').value = dosenData.nama || '';
     document.getElementById('edit_email').value = dosenData.email || '';
     document.getElementById('edit_status').value = dosenData.status || 'aktif';
+    document.getElementById('edit_tempat_tanggal_lahir').value = dosenData.tempat_tanggal_lahir || '';
+    document.getElementById('edit_jenis_kelamin').value = dosenData.jenis_kelamin || '';
+    document.getElementById('edit_no_hp').value = dosenData.no_hp || '';
+    document.getElementById('edit_alamat_asal').value = dosenData.alamat_asal || '';
+    document.getElementById('edit_domisili').value = dosenData.domisili || '';
     
     const fakSelect = document.getElementById('edit_fakultas');
     for (let i = 0; i < fakSelect.options.length; i++) {

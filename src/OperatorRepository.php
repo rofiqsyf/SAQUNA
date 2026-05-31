@@ -146,6 +146,11 @@ class OperatorRepository {
             if (isset($data['nama'])) $fields['nama'] = $data['nama'];
             if (isset($data['nim'])) $fields['nim'] = $data['nim'];
             if (isset($data['foto'])) $fields['foto'] = $data['foto'];
+            if (isset($data['alamat'])) $fields['alamat'] = $data['alamat'];
+            if (isset($data['no_hp'])) $fields['no_hp'] = $data['no_hp'];
+            if (isset($data['jenis_kelamin'])) $fields['jenis_kelamin'] = $data['jenis_kelamin'];
+            if (isset($data['tempat_tanggal_lahir'])) $fields['tempat_tanggal_lahir'] = $data['tempat_tanggal_lahir'];
+            if (isset($data['email'])) $fields['email'] = $data['email'];
 
             $setClause = [];
             $values = [];

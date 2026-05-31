@@ -148,6 +148,13 @@ class DosenRepository {
                 $data['program_studi'], 
                 $data['status']
             ];
+            
+            // Add new profile fields dynamically if they exist in data
+            if (isset($data['tempat_tanggal_lahir'])) { $setClause .= ", tempat_tanggal_lahir = ?"; $params[] = $data['tempat_tanggal_lahir']; }
+            if (isset($data['jenis_kelamin'])) { $setClause .= ", jenis_kelamin = ?"; $params[] = $data['jenis_kelamin']; }
+            if (isset($data['no_hp'])) { $setClause .= ", no_hp = ?"; $params[] = $data['no_hp']; }
+            if (isset($data['alamat_asal'])) { $setClause .= ", alamat_asal = ?"; $params[] = $data['alamat_asal']; }
+            if (isset($data['domisili'])) { $setClause .= ", domisili = ?"; $params[] = $data['domisili']; }
 
             if ($data['foto'] !== null) {
                 $setClause .= ", foto = ?";

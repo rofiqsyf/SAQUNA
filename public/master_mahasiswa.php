@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -46,7 +46,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         'program_studi' => $_POST['program_studi'] ?? '',
         'fakultas' => $_POST['fakultas'] ?? '',
         'semester' => $_POST['semester'] ?? '',
-        'dosen_wali_id' => $_POST['dosen_wali_id'] ?? ''
+        'dosen_wali_id' => $_POST['dosen_wali_id'] ?? '',
+        'alamat' => $_POST['alamat'] ?? '',
+        'no_hp' => $_POST['no_hp'] ?? '',
+        'jenis_kelamin' => $_POST['jenis_kelamin'] ?? '',
+        'tempat_tanggal_lahir' => $_POST['tempat_tanggal_lahir'] ?? '',
+        'email' => $_POST['email'] ?? ''
     ];
 
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
@@ -196,7 +201,7 @@ include 'components/header.php';
                         </td>
                         <td class="px-4 py-3 border-b border-outline-variant/20 font-body-md text-center">
                             <div class="flex items-center justify-center gap-2">
-                                <button onclick="openEditModal(<?= $m['id'] ?>, '<?= htmlspecialchars($m['nim'], ENT_QUOTES) ?>', '<?= htmlspecialchars($m['nama'], ENT_QUOTES) ?>', '<?= htmlspecialchars($m['fakultas'] ?? '', ENT_QUOTES) ?>', '<?= htmlspecialchars($m['program_studi'] ?? '', ENT_QUOTES) ?>', <?= $m['semester'] ?? 1 ?>, <?= $m['dosen_wali_id'] ?? 'null' ?>)" class="bg-primary-container text-primary p-2 rounded-lg hover:bg-primary hover:text-white transition-colors" title="Edit Data Akademik">
+                                <button onclick='openEditModal(<?= json_encode($m, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)' class="bg-primary-container text-primary p-2 rounded-lg hover:bg-primary hover:text-white transition-colors" title="Edit Data Akademik">
                                     <span class="material-symbols-outlined" style="font-size: 18px;">edit_square</span>
                                 </button>
                                 <form method="POST" action="" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data mahasiswa ini? Tindakan ini tidak dapat dibatalkan dan akun login mahasiswa akan terhapus.');">
@@ -247,24 +252,29 @@ function updateProdiOptions(mhsId) {
     }
 }
 
-function openEditModal(id, nim, nama, fakultas, prodi, semester, dosenWaliId) {
-    document.getElementById('edit_mahasiswa_id').value = id;
-    document.getElementById('edit_nim').value = nim;
-    document.getElementById('edit_nama').value = nama;
-    document.getElementById('edit_semester').value = semester;
-    document.getElementById('edit_dosen_wali_id').value = dosenWaliId || '';
+function openEditModal(mhs) {
+    document.getElementById('edit_mahasiswa_id').value = mhs.id;
+    document.getElementById('edit_nim').value = mhs.nim || '';
+    document.getElementById('edit_nama').value = mhs.nama || '';
+    document.getElementById('edit_semester').value = mhs.semester || 1;
+    document.getElementById('edit_dosen_wali_id').value = mhs.dosen_wali_id || '';
+    document.getElementById('edit_email').value = mhs.email || '';
+    document.getElementById('edit_no_hp').value = mhs.no_hp || '';
+    document.getElementById('edit_alamat').value = mhs.alamat || '';
+    document.getElementById('edit_tempat_tanggal_lahir').value = mhs.tempat_tanggal_lahir || '';
+    document.getElementById('edit_jenis_kelamin').value = mhs.jenis_kelamin || '';
     
     // Set fakultas and trigger prodi update
     const fakSelect = document.getElementById('fak_edit');
     for (let i = 0; i < fakSelect.options.length; i++) {
-        if (fakSelect.options[i].value === fakultas) {
+        if (fakSelect.options[i].value === mhs.fakultas) {
             fakSelect.selectedIndex = i;
             break;
         }
     }
     
     // Set prodi_selected value
-    document.getElementById('prodi_edit').setAttribute('data-selected', prodi);
+    document.getElementById('prodi_edit').setAttribute('data-selected', mhs.program_studi || '');
     
     updateProdiOptions('edit');
     
@@ -410,10 +420,40 @@ document.addEventListener('DOMContentLoaded', () => {
                     <label class="block text-sm font-semibold text-on-surface-variant mb-1">Nama Lengkap</label>
                     <input type="text" name="nama" id="edit_nama" required class="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none">
                 </div>
+                <div>
+                    <label class="block text-sm font-semibold text-on-surface-variant mb-1">Email</label>
+                    <input type="email" name="email" id="edit_email" class="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-on-surface-variant mb-1">No HP</label>
+                    <input type="text" name="no_hp" id="edit_no_hp" class="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-on-surface-variant mb-1">Tempat, Tgl Lahir</label>
+                    <input type="text" name="tempat_tanggal_lahir" id="edit_tempat_tanggal_lahir" placeholder="Contoh: Jakarta, 01 Januari 2000" class="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-on-surface-variant mb-1">Jenis Kelamin</label>
+                    <select name="jenis_kelamin" id="edit_jenis_kelamin" class="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none">
+                        <option value="">-- Pilih --</option>
+                        <option value="Laki-laki">Laki-laki</option>
+                        <option value="Perempuan">Perempuan</option>
+                    </select>
+                </div>
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-semibold text-on-surface-variant mb-1">Ganti Foto Profil</label>
-                    <input type="file" name="foto" accept="image/jpeg, image/png, image/jpg" class="w-full bg-surface border border-outline-variant rounded-xl px-3 py-1.5 text-sm focus:ring-2 focus:ring-primary outline-none">
-                    <p class="text-[10px] text-on-surface-variant mt-1">Kosongi jika tidak diubah.</p>
+                    <label class="block text-sm font-semibold text-on-surface-variant mb-1">Alamat Domisili</label>
+                    <textarea name="alamat" id="edit_alamat" rows="2" class="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none"></textarea>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-primary mb-2">Ganti Foto Profil (kosongkan jika tidak diubah)</label>
+                    <div class="relative group cursor-pointer">
+                        <input type="file" name="foto" accept="image/jpeg, image/png, image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="document.getElementById('file-name-edit-mhs').textContent = this.files[0] ? this.files[0].name : 'Klik untuk ganti foto';">
+                        <div class="w-full bg-surface-container-lowest border-2 border-dashed border-outline-variant/50 rounded-xl px-4 py-6 flex flex-col items-center justify-center gap-2 group-hover:border-primary group-hover:bg-primary-container/10 transition-all text-center">
+                            <span class="material-symbols-outlined text-3xl text-primary/50 group-hover:text-primary transition-colors">cloud_upload</span>
+                            <p class="text-sm font-semibold text-primary" id="file-name-edit-mhs">Klik untuk ganti foto</p>
+                            <p class="text-xs text-on-surface-variant">Format didukung: JPG, PNG, WEBP</p>
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-on-surface-variant mb-1">Fakultas</label>
