@@ -185,19 +185,102 @@ function getLinkClass($page, $current) {
         
         .glass-panel { background: var(--color-glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--color-glass-border); }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        body { background-color: var(--color-background); background-image: radial-gradient(circle at 10% 20%, var(--color-mint-glow) 0%, transparent 40%), radial-gradient(circle at 90% 80%, var(--color-mint-glow) 0%, transparent 40%); }
+        body { background-color: var(--color-background); background-image: radial-gradient(circle at 10% 20%, var(--color-mint-glow) 0%, transparent 40%), radial-gradient(circle at 90% 80%, var(--color-mint-glow) 0%, transparent 40%); overflow-x: hidden; }
         
-        /* Custom Scrollbar for Sidebar */
+        /* ===== CUSTOM SCROLLBAR ===== */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.7); }
         .custom-scrollbar { scrollbar-width: thin; scrollbar-color: rgba(156, 163, 175, 0.4) transparent; }
+
+        /* ===== SKIP LINK AKSESIBILITAS ===== */
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 1rem;
+            background: var(--color-primary, #1a56db);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            z-index: 9999;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: top 0.15s ease;
+        }
+        .skip-link:focus { top: 1rem; }
+
+        /* ===== TOUCH TARGETS MINIMUM 44x44px ===== */
+        button, .btn, [role="button"] {
+            min-height: 44px;
+            min-width: 44px;
+        }
+        /* Tombol kecil di dalam tabel boleh lebih kecil (aksi) */
+        .btn-sm { min-height: 36px; min-width: 36px; }
+
+        /* ===== INPUT FONT SIZE — Cegah zoom di iOS ===== */
+        input, select, textarea {
+            font-size: 1rem !important;
+            -webkit-appearance: none;
+        }
+
+        /* ===== TABEL RESPONSIF ===== */
+        .table-responsive-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+        .table-responsive-wrapper::-webkit-scrollbar { height: 5px; }
+        .table-responsive-wrapper::-webkit-scrollbar-track { background: rgba(0,0,0,0.04); border-radius: 3px; }
+        .table-responsive-wrapper::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+        .table-responsive-wrapper table { min-width: 600px; }
+
+        /* ===== SIDEBAR OVERLAY (Mobile) ===== */
+        #sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 35;
+            -webkit-backdrop-filter: blur(2px);
+            backdrop-filter: blur(2px);
+        }
+        #sidebar-overlay.active { display: block; }
+
+        /* ===== PRINT STYLES ===== */
+        @media print {
+            #sidebar, #main-header, #sidebar-toggle, .no-print { display: none !important; }
+            #main-content { margin-left: 0 !important; padding-top: 1rem !important; }
+            body { font-size: 12pt; background: white !important; }
+        }
+
+        /* ===== REDUCED MOTION ===== */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* ===== DESKTOP SIDEBAR COLLAPSE ===== */
+        @media (min-width: 1024px) {
+            body.desktop-sidebar-closed #sidebar { transform: translateX(-100%) !important; }
+            body.desktop-sidebar-closed #main-header { left: 0 !important; }
+            body.desktop-sidebar-closed #main-content { margin-left: 0 !important; }
+        }
     </style>
 </head>
 <body class="font-body-md text-on-surface">
 
-<aside id="sidebar" class="fixed left-0 top-0 h-screen w-72 z-40 bg-surface dark:bg-[#091f1a] flex flex-col shadow-2xl border-r border-outline-variant/30 dark:border-[#193a2e] transition-all duration-300">
+<!-- Skip Navigation untuk Aksesibilitas -->
+<a href="#main-content" class="skip-link">Langsung ke Konten Utama</a>
+
+<!-- Overlay untuk Sidebar Mobile -->
+<div id="sidebar-overlay" aria-hidden="true"></div>
+
+<aside id="sidebar" role="navigation" aria-label="Menu Navigasi Utama" class="fixed left-0 top-0 h-screen w-72 z-40 bg-surface dark:bg-[#091f1a] flex flex-col shadow-2xl border-r border-outline-variant/30 dark:border-[#193a2e] transition-transform duration-300 -translate-x-full lg:translate-x-0">
     <div class="flex items-center gap-3 mb-8 px-6 pt-8">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-fixed flex items-center justify-center shadow-lg shadow-primary/20">
             <span class="material-symbols-outlined text-white text-[22px]">school</span>
@@ -281,13 +364,13 @@ function getLinkClass($page, $current) {
     </div>
 </aside>
 
-<header id="main-header" class="fixed top-0 right-0 left-72 h-20 z-30 glass-panel flex justify-between items-center px-margin-page border-b border-white/40 shadow-[0_8px_32px_0_rgba(134,210,177,0.15)] transition-all duration-300">
+<header id="main-header" role="banner" class="fixed top-0 right-0 left-0 lg:left-72 h-20 z-30 glass-panel flex justify-between items-center px-margin-page border-b border-white/40 shadow-[0_8px_32px_0_rgba(134,210,177,0.15)] transition-all duration-300">
     <div class="flex items-center gap-stack-md">
-        <button id="sidebar-toggle" class="p-2 mr-2 text-on-surface-variant hover:bg-primary-container/20 rounded-full transition-all focus:outline-none">
+        <button id="sidebar-toggle" aria-label="Buka atau tutup menu navigasi" aria-expanded="false" aria-controls="sidebar" class="p-2 mr-1 text-on-surface-variant hover:bg-primary-container/20 rounded-full transition-all focus:outline-none">
             <span class="material-symbols-outlined">menu</span>
         </button>
-        <!-- Pill Shaped Search Bar -->
-        <div class="relative w-64 md:w-96 lg:w-[400px] group/search">
+        <!-- Pill Shaped Search Bar — tersembunyi di mobile kecil -->
+        <div class="relative hidden sm:block w-48 md:w-72 lg:w-[380px] group/search">
             <div class="flex items-center w-full bg-white dark:bg-[#091f1a]/50 border border-outline-variant/30 focus-within:border-primary/50 focus-within:shadow-md rounded-full pl-4 pr-1 py-1 transition-all duration-300">
                 <input id="global-search-input" class="flex-1 bg-transparent border-0 outline-none ring-0 shadow-none focus:border-0 focus:outline-none focus:ring-0 focus:shadow-none text-body-lg text-on-surface placeholder:text-on-surface-variant/50 w-full p-0 m-0" style="border: none !important; outline: none !important; box-shadow: none !important; background: transparent !important;" placeholder="Search..." type="text" autocomplete="off"/>
                 <button class="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary-fixed flex items-center justify-center shadow flex-shrink-0 hover:scale-105 transition-transform" aria-label="Search">
@@ -359,11 +442,12 @@ function getLinkClass($page, $current) {
             }
         ?>
         <?php if ($profileLink !== '#'): ?>
-        <a href="<?= $profileLink ?>" class="flex items-center gap-stack-sm border-l border-outline-variant/30 pl-stack-md hover:bg-primary-container/10 p-2 rounded-2xl transition-all cursor-pointer group">
+        <a href="<?= $profileLink ?>" class="flex items-center gap-stack-sm border-l border-outline-variant/30 pl-stack-md hover:bg-primary-container/10 p-2 rounded-2xl transition-all cursor-pointer group" aria-label="Profil <?= htmlspecialchars($username) ?>">
         <?php else: ?>
         <div class="flex items-center gap-stack-sm border-l border-outline-variant/30 pl-stack-md">
         <?php endif; ?>
-            <div class="text-right mr-1">
+            <!-- Nama & Role: tersembunyi di mobile kecil -->
+            <div class="text-right mr-1 hidden md:block">
                 <p class="font-title-lg text-title-lg text-primary group-hover:text-primary-hover transition-colors"><?= htmlspecialchars($username) ?></p>
                 <p class="font-label-md text-label-md text-on-surface-variant uppercase"><?= htmlspecialchars($role) ?></p>
             </div>
@@ -403,7 +487,7 @@ function getLinkClass($page, $current) {
     </div>
 </header>
 
-<main id="main-content" class="ml-72 pt-28 min-h-screen px-margin-page pb-stack-xl max-w-container-max mx-auto relative transition-all duration-300">
+<main id="main-content" role="main" class="ml-0 lg:ml-72 pt-28 min-h-screen px-margin-page pb-stack-xl max-w-container-max mx-auto relative transition-all duration-300">
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -436,25 +520,82 @@ function getLinkClass($page, $current) {
 
         const sidebarToggleBtn = document.getElementById('sidebar-toggle');
         const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
         const mainHeader = document.getElementById('main-header');
         const mainContent = document.getElementById('main-content');
 
-        if (sidebarToggleBtn && sidebar && mainHeader && mainContent) {
+        // Deteksi apakah di desktop (>= 1024px)
+        const isDesktop = () => window.innerWidth >= 1024;
+
+        function isSidebarOpen() {
+            if (isDesktop()) {
+                return !document.body.classList.contains('desktop-sidebar-closed');
+            }
+            return !sidebar.classList.contains('-translate-x-full');
+        }
+
+        function openSidebar() {
+            if (isDesktop()) {
+                document.body.classList.remove('desktop-sidebar-closed');
+            } else {
+                sidebar.classList.remove('-translate-x-full');
+                sidebarOverlay.classList.add('active');
+                sidebarOverlay.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden'; // Cegah scroll background
+            }
+            sidebarToggleBtn.setAttribute('aria-expanded', 'true');
+        }
+
+        function closeSidebar() {
+            if (isDesktop()) {
+                document.body.classList.add('desktop-sidebar-closed');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                sidebarOverlay.classList.remove('active');
+                sidebarOverlay.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+            sidebarToggleBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        if (sidebarToggleBtn && sidebar) {
             sidebarToggleBtn.addEventListener('click', function() {
-                sidebar.classList.toggle('-translate-x-full');
-                if (sidebar.classList.contains('-translate-x-full')) {
-                    mainHeader.classList.remove('left-72');
-                    mainHeader.classList.add('left-0');
-                    mainContent.classList.remove('ml-72');
-                    mainContent.classList.add('ml-0');
+                if (isSidebarOpen()) {
+                    closeSidebar();
                 } else {
-                    mainHeader.classList.add('left-72');
-                    mainHeader.classList.remove('left-0');
-                    mainContent.classList.add('ml-72');
-                    mainContent.classList.remove('ml-0');
+                    openSidebar();
                 }
             });
         }
+
+        // Tutup sidebar saat klik overlay (mobile)
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', closeSidebar);
+        }
+
+        // Tutup sidebar saat tekan Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isSidebarOpen()) {
+                if (!isDesktop()) {
+                    closeSidebar();
+                }
+            }
+        });
+
+        // Penyesuaian saat resize window (transisi mobile <-> desktop)
+        window.addEventListener('resize', function() {
+            if (isDesktop()) {
+                // Bersihkan state mobile saat ke desktop
+                sidebar.classList.remove('-translate-x-full');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            } else {
+                // Bersihkan state desktop saat ke mobile (biarkan tertutup by default)
+                if (!isSidebarOpen()) {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            }
+        });
 
         // Global Search Logic
         const searchInput = document.getElementById('global-search-input');
@@ -549,4 +690,23 @@ function getLinkClass($page, $current) {
             // Silently fail — notification system is secondary
         });
     }
+
+    // Global Form Double-Submit Protection
+    document.addEventListener('submit', function(e) {
+        if (e.target && e.target.nodeName === 'FORM') {
+            const submitBtn = e.target.querySelector('button[type="submit"], input[type="submit"]');
+            if (submitBtn && !submitBtn.disabled) {
+                // Jangan disable jika form adalah GET request (seperti search/filter)
+                if (e.target.method && e.target.method.toLowerCase() === 'get') return;
+                
+                // Set timeout minimal agar form data tetap tersubmit sebelum tombol di-disable
+                setTimeout(() => {
+                    submitBtn.dataset.originalText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+                    submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">sync</span> Memproses...';
+                }, 10);
+            }
+        }
+    });
 </script>

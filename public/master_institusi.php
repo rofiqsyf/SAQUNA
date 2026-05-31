@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -242,7 +242,7 @@ include 'components/header.php';
             <button type="submit" class="bg-secondary text-on-secondary px-5 py-2.5 rounded-xl font-label-md hover:bg-secondary/90 transition-colors flex items-center gap-1 shadow-sm"><span class="material-symbols-outlined" style="font-size: 18px;">add</span> Tambah</button>
         </form>
 
-        <div class="overflow-x-auto rounded-xl border border-outline-variant/30">
+        <div class="table-responsive-wrapper rounded-xl border border-outline-variant/30">
             <table class="w-full text-left border-collapse bg-white">
                 <thead>
                     <tr>
@@ -321,7 +321,7 @@ include 'components/header.php';
             <button type="submit" class="w-full bg-secondary text-on-secondary py-2.5 rounded-xl font-label-md hover:bg-secondary/90 transition-colors flex items-center justify-center gap-1 shadow-sm"><span class="material-symbols-outlined" style="font-size: 18px;">add</span> Tambah Gedung</button>
         </form>
 
-        <div class="overflow-x-auto rounded-xl border border-outline-variant/30">
+        <div class="table-responsive-wrapper rounded-xl border border-outline-variant/30">
             <table class="w-full text-left border-collapse bg-white">
                 <thead>
                     <tr>
@@ -417,7 +417,7 @@ include 'components/header.php';
             </div>
             <button type="submit" class="bg-secondary text-on-secondary px-5 py-2.5 rounded-xl font-label-md hover:bg-secondary/90 transition-colors flex items-center gap-1 shadow-sm"><span class="material-symbols-outlined" style="font-size: 18px;">add</span> Tambah</button>
         </form>
-        <div class="overflow-x-auto rounded-xl border border-outline-variant/30">
+        <div class="table-responsive-wrapper rounded-xl border border-outline-variant/30">
             <table class="w-full text-left border-collapse bg-white">
                 <thead>
                     <tr>
@@ -522,7 +522,7 @@ include 'components/header.php';
             <button type="submit" class="bg-secondary text-on-secondary px-5 py-2.5 rounded-xl font-label-md hover:bg-secondary/90 transition-colors flex items-center gap-1 shadow-sm"><span class="material-symbols-outlined" style="font-size: 18px;">add</span> Tambah</button>
         </form>
 
-        <div class="overflow-x-auto rounded-xl border border-outline-variant/30">
+        <div class="table-responsive-wrapper rounded-xl border border-outline-variant/30">
             <table class="w-full text-left border-collapse bg-white">
                 <thead>
                     <tr>
@@ -610,7 +610,7 @@ include 'components/header.php';
             <button type="submit" class="bg-secondary text-on-secondary px-5 py-2.5 rounded-xl font-label-md hover:bg-secondary/90 transition-colors flex items-center gap-1 shadow-sm"><span class="material-symbols-outlined" style="font-size: 18px;">add</span> Tambah</button>
         </form>
 
-        <div class="overflow-x-auto rounded-xl border border-outline-variant/30">
+        <div class="table-responsive-wrapper rounded-xl border border-outline-variant/30">
             <table class="w-full text-left border-collapse bg-white">
                 <thead>
                     <tr>

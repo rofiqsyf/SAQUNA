@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -163,7 +163,7 @@ require_once __DIR__ . '/components/header.php';
 
 <!-- Tabel Periode KRS -->
 <div class="card bg-surface rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden">
-    <div class="overflow-x-auto">
+    <div class="table-responsive-wrapper">
         <table class="w-full text-left">
             <thead>
                 <tr class="bg-surface-container-low">

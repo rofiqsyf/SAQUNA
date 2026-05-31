@@ -44,8 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         // Hapus jadwal lama jika ada (1 kelas 1 jadwal untuk saat ini)
                         $pdo->prepare("DELETE FROM jadwal_kelas WHERE dosen_id = ? AND matakuliah_id = ? AND semester = ?")->execute([$dosen_id, $matakuliah_id, $semester]);
                         
-                        $stmt = $pdo->prepare("INSERT INTO jadwal_kelas (dosen_id, matakuliah_id, semester, ruangan_id, hari, jam_mulai, jam_selesai) VALUES (?, ?, ?, ?, ?, ?, ?)");
-                        if ($stmt->execute([$dosen_id, $matakuliah_id, $semester, $ruangan_id, $hari, $jam_mulai, $jam_selesai])) {
+                        $stmt = $pdo->prepare("INSERT INTO jadwal_kelas (dosen_id, matakuliah_id, semester, kuota, ruangan_id, hari, jam_mulai, jam_selesai) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                        if ($stmt->execute([$dosen_id, $matakuliah_id, $semester, $kuota, $ruangan_id, $hari, $jam_mulai, $jam_selesai])) {
                             $success = "Jadwal kelas berhasil diatur.";
                         } else {
                             $error = "Gagal menyimpan jadwal.";
@@ -61,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $hari = $_POST['hari'] ?? '';
             $jam_mulai = $_POST['jam_mulai'] ?? '';
             $jam_selesai = $_POST['jam_selesai'] ?? '';
+            $kuota = max(1, (int)($_POST['kuota'] ?? 40));
             
             if ($id && $ruangan_id && $hari && $jam_mulai && $jam_selesai) {
                 // Ambil dosen_id & semester
@@ -83,8 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         if ($stmtCekDosen->fetch()) {
                             $error = "Bentrok! Dosen sudah memiliki jadwal di tempat lain.";
                         } else {
-                            $stmt = $pdo->prepare("UPDATE jadwal_kelas SET ruangan_id=?, hari=?, jam_mulai=?, jam_selesai=? WHERE id=?");
-                            if ($stmt->execute([$ruangan_id, $hari, $jam_mulai, $jam_selesai, $id])) {
+                            $stmt = $pdo->prepare("UPDATE jadwal_kelas SET ruangan_id=?, hari=?, jam_mulai=?, jam_selesai=?, kuota=? WHERE id=?");
+                            if ($stmt->execute([$ruangan_id, $hari, $jam_mulai, $jam_selesai, $kuota, $id])) {
                                 $success = "Jadwal kelas berhasil diperbarui.";
                             } else {
                                 $error = "Gagal memperbarui jadwal.";
@@ -193,7 +194,7 @@ include 'components/header.php';
 </div>
 
 <div class="glass-panel rounded-3xl p-stack-md shadow-sm border border-white/40">
-    <div class="overflow-x-auto rounded-xl border border-outline-variant/30">
+    <div class="table-responsive-wrapper">
         <table class="w-full text-left border-collapse" id="tableJadwal">
             <thead>
                 <tr>
@@ -202,6 +203,7 @@ include 'components/header.php';
                     <th class="px-4 py-3 bg-surface-container-low text-on-surface font-label-md border-b border-outline-variant/30">Mata Kuliah</th>
                     <th class="px-4 py-3 bg-surface-container-low text-on-surface font-label-md border-b border-outline-variant/30">Dosen Pengampu</th>
                     <th class="px-4 py-3 bg-surface-container-low text-on-surface font-label-md border-b border-outline-variant/30">Smt</th>
+                    <th class="px-4 py-3 bg-surface-container-low text-on-surface font-label-md border-b border-outline-variant/30">Kuota</th>
                     <th class="px-4 py-3 bg-surface-container-low text-on-surface font-label-md border-b border-outline-variant/30">Aksi</th>
                 </tr>
             </thead>
@@ -223,6 +225,9 @@ include 'components/header.php';
                     </td>
                     <td class="px-4 py-3 border-b border-outline-variant/20 font-body-md search-target"><?= htmlspecialchars($j['dosen_nama']) ?></td>
                     <td class="px-4 py-3 border-b border-outline-variant/20 text-center font-bold text-primary bg-primary/5"><?= htmlspecialchars($j['semester']) ?></td>
+                    <td class="px-4 py-3 border-b border-outline-variant/20 text-center">
+                        <span class="text-xs font-bold bg-surface-variant px-2 py-1 rounded-lg"><?= (int)($j['kuota'] ?? 40) ?></span>
+                    </td>
                     <td class="px-4 py-3 border-b border-outline-variant/20 whitespace-nowrap">
                         <button type="button" onclick="event.stopPropagation(); openEditModal(<?= $j['id'] ?>)" class="text-primary hover:text-primary-container mr-2 bg-primary/10 p-2 rounded-xl transition-colors" title="Edit Jadwal">
                             <span class="material-symbols-outlined text-[20px]">edit</span>
@@ -281,6 +286,13 @@ include 'components/header.php';
                         <option value="<?= $r['id'] ?>"><?= htmlspecialchars($r['nama_ruangan'].' (Kapasitas: '.$r['kapasitas'].')') ?></option>
                     <?php endforeach; ?>
                 </select>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-semibold text-primary mb-2">Kuota Kelas</label>
+                    <input type="number" name="kuota" value="40" min="1" max="200" required class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none">
+                </div>
             </div>
             
             <div class="grid grid-cols-3 gap-4 mb-6">
@@ -362,6 +374,13 @@ include 'components/header.php';
                         </select>
                     </div>
                     
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-primary mb-2">Kuota Kelas</label>
+                            <input type="number" name="kuota" id="edit_kuota" min="1" max="200" required class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none">
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-3 gap-4 mb-6">
                         <div>
                             <label class="block text-sm font-semibold text-primary mb-2">Hari</label>
@@ -524,6 +543,9 @@ function openEditModal(id) {
                 document.getElementById('edit_hari').value = k.hari;
                 document.getElementById('edit_jam_mulai').value = k.jam_mulai;
                 document.getElementById('edit_jam_selesai').value = k.jam_selesai;
+                if (document.getElementById('edit_kuota')) {
+                    document.getElementById('edit_kuota').value = k.kuota || 40;
+                }
                 
                 // Populate Mhs
                 document.getElementById('badge-mhs').textContent = m.length;

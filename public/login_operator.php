@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p class="text-on-surface-variant opacity-75 font-medium" style="font-size: 10px; line-height: 1.3; margin-top: 2px; max-width: 140px; letter-spacing: 0.2px;">Sistem Akademik Universitas Sains Al-Qur'an</p>
             </div>
         </div>
-        <nav class="hidden md:flex items-center gap-stack-md">
+        <nav class="flex items-center gap-stack-md">
             <div class="flex items-center gap-stack-sm text-on-surface-variant font-body-md">
                 <div class="group relative flex items-center justify-center">
                     <span class="material-symbols-outlined hover:bg-primary-container/10 p-2 rounded-full cursor-pointer transition-all">help_outline</span>
@@ -136,9 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button id="theme-toggle" class="material-symbols-outlined hover:bg-primary-container/10 p-2 rounded-full cursor-pointer transition-all focus:outline-none">dark_mode</button>
             </div>
         </nav>
-        <div class="md:hidden">
-            <span class="material-symbols-outlined text-primary">menu</span>
-        </div>
     </header>
     <!-- Main Content -->
     <main class="flex-grow flex items-center justify-center px-gutter pt-24 pb-12 relative z-10">

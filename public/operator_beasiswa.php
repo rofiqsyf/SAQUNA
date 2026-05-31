@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -124,7 +124,7 @@ include 'components/header.php';
 <?php endif; ?>
 
 <div class="glass-panel rounded-3xl p-stack-md mb-stack-md shadow-sm border border-white/40">
-    <div class="overflow-x-auto rounded-xl border border-outline-variant/30">
+    <div class="table-responsive-wrapper rounded-xl border border-outline-variant/30">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr>

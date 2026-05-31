@@ -101,20 +101,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <p class="text-on-surface-variant opacity-75 font-medium" style="font-size: 10px; line-height: 1.3; margin-top: 2px; max-width: 140px; letter-spacing: 0.2px;">Sistem Akademik Universitas Sains Al-Qur'an</p>
 </div>
 </div>
-<nav class="hidden md:flex items-center gap-stack-md">
-<div class="flex items-center gap-stack-sm text-on-surface-variant font-body-md">
-<div class="group relative flex items-center justify-center">
-    <span class="material-symbols-outlined hover:bg-primary-container/10 p-2 rounded-full cursor-pointer transition-all">help_outline</span>
-    <div class="absolute top-full right-0 mt-2 w-64 bg-surface-container-high text-on-surface p-3 rounded-lg shadow-lg text-sm border border-outline-variant/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 font-normal">
-        Halaman login khusus Mahasiswa. Silakan masukkan kredensial Anda untuk mengakses portal akademik SAQUNA.
-    </div>
-</div>
-<button id="theme-toggle" class="material-symbols-outlined hover:bg-primary-container/10 p-2 rounded-full cursor-pointer transition-all focus:outline-none">dark_mode</button>
-</div>
-</nav>
-<div class="md:hidden">
-<span class="material-symbols-outlined text-primary">menu</span>
-</div>
+        <nav class="flex items-center gap-stack-md">
+            <div class="flex items-center gap-stack-sm text-on-surface-variant font-body-md">
+                <div class="group relative flex items-center justify-center">
+                    <span class="material-symbols-outlined hover:bg-primary-container/10 p-2 rounded-full cursor-pointer transition-all">help_outline</span>
+                    <div class="absolute top-full right-0 mt-2 w-64 bg-surface-container-high text-on-surface p-3 rounded-lg shadow-lg text-sm border border-outline-variant/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 font-normal">
+                        Gunakan NIM dan password yang diberikan saat pendaftaran ulang. Hubungi akademik jika mengalami kendala.
+                    </div>
+                </div>
+                <button id="theme-toggle" class="material-symbols-outlined hover:bg-primary-container/10 p-2 rounded-full cursor-pointer transition-all focus:outline-none">dark_mode</button>
+            </div>
+        </nav>
 </header>
 <!-- Main Content -->
 <main class="flex-grow flex items-center justify-center px-gutter pt-24 pb-12 relative z-10">

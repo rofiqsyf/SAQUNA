@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isKrsOpen) {
             <?= Auth::csrfField() ?>
             
             <div class="glass-panel rounded-3xl shadow-sm border border-white/40 overflow-hidden relative mb-stack-md">
-                <div class="overflow-x-auto custom-scrollbar">
+                <div class="table-responsive-wrapper custom-scrollbar">
                     <table class="w-full text-left">
                         <thead>
                             <tr class="bg-surface/50 text-on-surface font-label-md text-sm">

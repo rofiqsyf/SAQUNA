@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -171,7 +171,7 @@ include 'components/header.php';
                 <p>Belum ada kelas aktif yang terdata.</p>
             </div>
         <?php else: ?>
-            <div class="overflow-x-auto rounded-xl border border-outline-variant/30">
+            <div class="table-responsive-wrapper rounded-xl border border-outline-variant/30">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr>

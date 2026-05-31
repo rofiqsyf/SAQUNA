@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -476,7 +476,7 @@ if ($hour >= 5 && $hour < 11) {
                 <a href="dosen_ta.php" class="text-sm font-bold text-primary hover:underline">Kelola Bimbingan &rarr;</a>
             </div>
             
-            <div class="overflow-x-auto mt-4">
+            <div class="table-responsive-wrapper mt-4">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="border-b border-outline-variant/30 text-on-surface-variant font-label-md">

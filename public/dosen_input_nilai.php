@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -126,7 +126,7 @@ include 'components/header.php';
                 <p class="text-sm text-on-surface-variant">Sistem kini dilengkapi dengan penyimpanan otomatis (Auto-Save). Anda tidak perlu menekan tombol simpan massal. Nilai akan otomatis tersimpan setiap kali Anda mengetik dan berpindah kolom.</p>
             </div>
 
-            <div class="overflow-x-auto relative z-10 custom-scrollbar rounded-xl border border-outline-variant/30">
+            <div class="table-responsive-wrapper relative z-10 custom-scrollbar rounded-xl border border-outline-variant/30">
                 <input type="hidden" id="csrf_token" value="<?= Auth::generateCsrf() ?>">
                 <table class="w-full text-left border-collapse">
                     <thead>

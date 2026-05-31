@@ -1,0 +1,18 @@
+# Mencegah eksekusi file PHP atau file berbahaya lainnya di folder Uploads
+# Jika ada hacker yang berhasil mengunggah shell.php, server tidak akan menjalankannya
+
+<FilesMatch "\.(php|php3|php4|php5|php7|php8|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)$">
+    # Force the server to return a 403 Forbidden error
+    Require all denied
+</FilesMatch>
+
+# Matikan eksekusi script engine
+php_flag engine off
+
+# Mencegah browsing direktori (index of /)
+Options -Indexes
+
+# Paksa header agar file didownload/ditampilkan sebagai media, BUKAN dieksekusi sebagai HTML/Script (Mencegah Stored XSS)
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>

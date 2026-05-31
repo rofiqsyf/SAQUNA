@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -62,7 +62,7 @@ $msg = $_GET['msg'] ?? '';
     <section class="lg:col-span-12">
         <div class="glass-panel rounded-3xl shadow-sm border border-white/40 overflow-hidden relative mb-stack-md">
             <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-10 -mt-10 blur-2xl transition-colors"></div>
-            <div class="overflow-x-auto custom-scrollbar relative z-10">
+            <div class="table-responsive-wrapper custom-scrollbar relative z-10">
                 <table class="w-full text-left">
                     <thead>
                         <tr class="bg-surface/50 text-on-surface font-label-md text-sm">

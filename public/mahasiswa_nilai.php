@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -89,7 +89,7 @@ include 'components/header.php';
         <div class="glass-panel rounded-3xl p-stack-lg shadow-sm border border-white/40">
             <h3 class="font-headline-md text-headline-md text-primary mb-stack-md">Rekam Jejak Semester</h3>
             
-            <div class="overflow-x-auto rounded-xl border border-outline-variant/30 bg-white/50">
+            <div class="table-responsive-wrapper rounded-xl border border-outline-variant/30 bg-white/50">
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-primary-container/20 border-b border-outline-variant/30">
                         <tr>

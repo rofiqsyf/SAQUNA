@@ -196,9 +196,9 @@ require_once __DIR__ . '/components/header.php';
             <label class="block text-xs font-semibold text-on-surface-variant mb-1">Program Studi</label>
             <select name="prodi" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
                 <option value="">Semua Prodi</option>
-                <?php foreach ($prodiOptions as $prodi): ?>
-                <option value="<?= htmlspecialchars($prodi) ?>" <?= $filterProdi === $prodi ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($prodi) ?>
+                <?php foreach ($prodiList as $prodi): ?>
+                <option value="<?= htmlspecialchars($prodi['nama_prodi']) ?>" <?= $filterProdi === $prodi['nama_prodi'] ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($prodi['nama_prodi']) ?>
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -220,7 +220,7 @@ require_once __DIR__ . '/components/header.php';
     </div>
     <?php endif; ?>
     
-    <div class="overflow-x-auto">
+    <div class="table-responsive-wrapper">
         <table class="w-full text-left">
             <thead>
                 <tr class="bg-surface-container-low">

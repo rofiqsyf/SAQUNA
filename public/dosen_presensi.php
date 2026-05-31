@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -204,7 +204,7 @@ $textColor = $isBuka ? 'text-primary' : 'text-on-surface-variant';
             <p>Tidak ada mahasiswa terdaftar di kelas ini.</p>
         </div>
     <?php else: ?>
-        <div class="overflow-x-auto rounded-xl border border-outline-variant/30 mb-6">
+        <div class="table-responsive-wrapper rounded-xl border border-outline-variant/30 mb-6">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr>

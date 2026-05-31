@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -87,7 +87,7 @@ include 'components/header.php';
             </button>
         </div>
 
-        <div class="overflow-x-auto rounded-xl border border-outline-variant/30 max-h-[500px] overflow-y-auto relative">
+        <div class="table-responsive-wrapper rounded-xl border border-outline-variant/30 max-h-[500px] overflow-y-auto relative">
             <table class="w-full text-left border-collapse">
                 <thead class="sticky top-0 bg-surface z-10 shadow-sm">
                     <tr>

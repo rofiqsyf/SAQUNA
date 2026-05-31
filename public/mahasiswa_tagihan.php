@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -30,7 +30,7 @@ include 'components/header.php';
         <?php if (empty($tagihan)): ?>
             <div class="bg-tertiary-container text-on-tertiary-container p-stack-sm rounded-xl mb-stack-md font-body-md flex items-center gap-2">Belum ada tagihan pembayaran untuk Anda.</div>
         <?php else: ?>
-            <div class="overflow-x-auto rounded-xl border border-outline-variant/30">
+            <div class="table-responsive-wrapper rounded-xl border border-outline-variant/30">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr>

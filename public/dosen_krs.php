@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -118,7 +118,7 @@ include 'components/header.php';
                     <button type="submit" name="simpan_catatan" class="btn-primary text-sm whitespace-nowrap self-end"><span class="material-symbols-outlined text-[16px]">send</span> Kirim Catatan</button>
                 </form>
                 
-                <div class="overflow-x-auto rounded-xl border border-outline-variant/30">
+                <div class="table-responsive-wrapper rounded-xl border border-outline-variant/30">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr>

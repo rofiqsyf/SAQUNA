@@ -107,14 +107,33 @@ class Auth {
         self::startSession();
         if (!isset($_SESSION['user_id'])) return false;
         
-        // Mitigasi Ghost Session: Pastikan user masih ada di database dan role-nya tidak berubah
+        // Mitigasi Ghost Session: Pastikan user masih ada di database, role-nya tidak berubah, dan statusnya aktif
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+        $sql = "SELECT u.role, 
+                       m.deleted_at as m_deleted,
+                       d.status as d_status,
+                       d.deleted_at as d_deleted
+                FROM users u
+                LEFT JOIN mahasiswa m ON u.id = m.user_id
+                LEFT JOIN dosen d ON u.id = d.user_id
+                WHERE u.id = ?";
+        $stmt = $pdo->prepare($sql);
         $stmt->execute([$_SESSION['user_id']]);
-        $dbRole = $stmt->fetchColumn();
+        $row = $stmt->fetch();
         
-        if (!$dbRole || $dbRole !== $_SESSION['role']) {
-            // Jika user dihapus oleh operator, atau role diubah, hancurkan session
+        if (!$row || $row['role'] !== $_SESSION['role']) {
+            $_SESSION = [];
+            session_destroy();
+            return false;
+        }
+
+        if ($row['role'] === 'mahasiswa' && $row['m_deleted'] !== null) {
+            $_SESSION = [];
+            session_destroy();
+            return false;
+        }
+
+        if ($row['role'] === 'dosen' && ($row['d_status'] !== 'aktif' || $row['d_deleted'] !== null)) {
             $_SESSION = [];
             session_destroy();
             return false;

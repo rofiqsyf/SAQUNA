@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -424,7 +424,7 @@ include 'components/header.php';
                 <span class="bg-error text-white px-3 py-1 rounded-full font-label-md"><?= count($tindakanList) ?> Menunggu</span>
             </div>
             
-            <div class="overflow-x-auto">
+            <div class="table-responsive-wrapper">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="border-b border-outline-variant/30 text-on-surface-variant font-label-md">
@@ -484,7 +484,7 @@ include 'components/header.php';
                 </div>
             </div>
             
-            <div class="overflow-x-auto mt-4">
+            <div class="table-responsive-wrapper mt-4">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="border-b border-outline-variant/30 text-on-surface-variant font-label-md">

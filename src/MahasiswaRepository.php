@@ -128,7 +128,12 @@ class MahasiswaRepository {
             $stmtInsert = $this->pdo->prepare($sqlInsert);
 
             foreach ($pilihanKrs as $pilihan) {
-                list($dosenId, $matakuliahId) = explode('|', $pilihan);
+                $parts = explode('|', $pilihan);
+                if (count($parts) !== 2) {
+                    $this->pdo->rollBack();
+                    return ['status' => false, 'error_msg' => "Format pilihan KRS tidak valid."];
+                }
+                list($dosenId, $matakuliahId) = $parts;
                 
             // --- Validasi Prasyarat ---
                 foreach ($prasyaratList as $p) {
@@ -153,12 +158,17 @@ class MahasiswaRepository {
                 }
                 // --- End Validasi ---
 
-                // Cek Kuota dan Kunci Baris (Pessimistic Locking)
-                $stmtQuota = $this->pdo->prepare("SELECT kuota, (SELECT COUNT(id) FROM krs WHERE matakuliah_id = ? AND dosen_id = ? AND semester_aktif = ? AND status != 'Ditolak') as terisi FROM jadwal_kelas WHERE matakuliah_id = ? AND dosen_id = ? FOR UPDATE");
-                $stmtQuota->execute([(int)$matakuliahId, (int)$dosenId, $semesterAktif, (int)$matakuliahId, (int)$dosenId]);
+                // Cek Kuota dan Kunci Baris (Pessimistic Locking) & Validasi IDOR Semester
+                $stmtQuota = $this->pdo->prepare("SELECT kuota, (SELECT COUNT(id) FROM krs WHERE matakuliah_id = ? AND dosen_id = ? AND semester_aktif = ? AND status != 'Ditolak') as terisi FROM jadwal_kelas WHERE matakuliah_id = ? AND dosen_id = ? AND semester = ? FOR UPDATE");
+                $stmtQuota->execute([(int)$matakuliahId, (int)$dosenId, $semesterAktif, (int)$matakuliahId, (int)$dosenId, $semesterAktif]);
                 $quotaData = $stmtQuota->fetch();
                 
-                if ($quotaData && $quotaData['terisi'] >= $quotaData['kuota']) {
+                if (!$quotaData) {
+                    $this->pdo->rollBack();
+                    return ['status' => false, 'error_msg' => "Mata Kuliah (ID $matakuliahId) kelas Dosen ID $dosenId tidak ditawarkan pada semester ini."];
+                }
+
+                if ($quotaData['terisi'] >= $quotaData['kuota']) {
                     $this->pdo->rollBack();
                     return ['status' => false, 'error_msg' => "Mata Kuliah (ID $matakuliahId) kelas Dosen ID $dosenId sudah penuh."];
                 }
@@ -724,7 +734,7 @@ class MahasiswaRepository {
 
     // --- PERWALIAN ---
     public function getCatatanPerwalian(int $mahasiswaId, string $semester): ?string {
-        $stmt = $this->pdo->prepare("SELECT catatan FROM catatan_perwalian WHERE mahasiswa_id = ? AND semester = ? ORDER BY created_at DESC LIMIT 1");
+        $stmt = $this->pdo->prepare("SELECT catatan FROM catatan_perwalian WHERE mahasiswa_id = ? AND semester = ? ORDER BY waktu_bimbingan DESC LIMIT 1");
         $stmt->execute([$mahasiswaId, $semester]);
         $res = $stmt->fetchColumn();
         return $res ?: null;

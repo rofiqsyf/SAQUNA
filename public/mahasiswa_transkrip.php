@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -132,7 +132,7 @@ if ($selected_semester !== 'all') {
                         <p class="font-body-lg font-bold text-on-surface-variant">Belum ada data nilai / transkrip yang tersedia.</p>
                     </div>
                 <?php else: ?>
-                    <div class="overflow-x-auto custom-scrollbar">
+                    <div class="table-responsive-wrapper custom-scrollbar">
                         <table class="w-full text-left">
                             <thead>
                                 <tr class="bg-surface/50 text-on-surface font-label-md text-sm">

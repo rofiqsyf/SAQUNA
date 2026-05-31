@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -66,7 +66,7 @@ require_once __DIR__ . '/components/header.php';
         <p class="text-sm">Tidak ada mahasiswa yang mendapatkan nilai C ke bawah.</p>
     </div>
     <?php else: ?>
-    <div class="overflow-x-auto">
+    <div class="table-responsive-wrapper">
         <table class="w-full text-left">
             <thead>
                 <tr class="bg-surface-container-low">

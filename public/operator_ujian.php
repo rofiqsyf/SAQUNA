@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../autoload.php';
 
 use Src\Auth;
@@ -75,7 +75,7 @@ include 'components/header.php';
 <?php if ($error): ?><div class="bg-error/20 text-error p-4 rounded-xl mb-6 font-medium flex items-center gap-2"><span class="material-symbols-outlined">error</span> <?= htmlspecialchars($error) ?></div><?php endif; ?>
 
 <div class="glass-panel rounded-3xl p-stack-md shadow-sm border border-white/40">
-    <div class="overflow-x-auto rounded-xl border border-outline-variant/30">
+    <div class="table-responsive-wrapper rounded-xl border border-outline-variant/30">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr>
