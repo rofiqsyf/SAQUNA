@@ -25,7 +25,9 @@ class KalenderRepository {
     }
 
     public function isKrsPeriodOpen(): bool {
-        $stmt = $this->pdo->query("SELECT COUNT(*) FROM periode_krs WHERE status = 'Buka' AND NOW() BETWEEN tanggal_buka AND tanggal_tutup");
+        $now = date('Y-m-d H:i:s');
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM periode_krs WHERE status = 'Buka' AND ? BETWEEN tanggal_buka AND tanggal_tutup");
+        $stmt->execute([$now]);
         return (bool)$stmt->fetchColumn();
     }
 

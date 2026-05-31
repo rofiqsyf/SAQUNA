@@ -34,7 +34,9 @@ $rekapPresensi = $repo->getRekapPresensiDosen($dosen['id'] ?? 0, $semesterAktif)
 $mhsWaliPerhatian = $repo->getMahasiswaWaliPerhatianKhusus($dosen['id'] ?? 0);
 $distribusiNilai = $repo->getStatistikDistribusiNilai($dosen['id'] ?? 0, $semesterAktif);
 $edomStats = $repo->getRingkasanEdom($dosen['id'] ?? 0);
-$taStats = $repo->getRingkasanBimbinganTA($dosen['id'] ?? 0);
+$taStats = $repo->getBimbinganTA($dosen['id'] ?? 0); // Using the actual DB method now
+$penelitian = $repo->getPenelitianDosen($dosen['id'] ?? 0);
+$pengabdian = $repo->getPengabdianDosen($dosen['id'] ?? 0);
 
 // Alerts
 $alerts = [];
@@ -328,6 +330,73 @@ if ($hour >= 5 && $hour < 11) {
                 </div>
                 <?php endforeach; ?>
             </div>
+        </div>
+    </section>
+
+    <!-- ROW 4: Tridharma dan Tugas Akhir -->
+    <section class="lg:col-span-7 mt-stack-md flex flex-col">
+        <div class="glass-panel rounded-3xl p-stack-lg shadow-sm border border-white/40 flex-1 flex flex-col">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="font-headline-md text-headline-md text-primary">Bimbingan Tugas Akhir</h3>
+                    <p class="text-on-surface-variant font-body-sm mt-1">Daftar mahasiswa bimbingan skripsi aktif.</p>
+                </div>
+                <span class="material-symbols-outlined text-primary-container text-3xl">history_edu</span>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar max-h-[250px]">
+                <?php if (empty($taStats)): ?>
+                    <p class="text-xs text-on-surface-variant text-center mt-4 opacity-60">Belum ada mahasiswa bimbingan TA.</p>
+                <?php else: ?>
+                    <?php foreach ($taStats as $ta): ?>
+                    <div class="bg-surface-variant/30 p-3 rounded-xl border border-outline-variant/20 flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-sm text-on-surface"><?= htmlspecialchars($ta['mahasiswa_nama']) ?></p>
+                            <p class="text-xs text-on-surface-variant line-clamp-1 max-w-[250px]"><?= htmlspecialchars($ta['judul']) ?></p>
+                        </div>
+                        <span class="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider
+                            <?= match($ta['status']) {
+                                'Diajukan' => 'bg-secondary-container text-on-secondary-container',
+                                'Diterima' => 'bg-primary/20 text-primary',
+                                'Revisi'   => 'bg-tertiary-container text-on-tertiary-container',
+                                'Lulus'    => 'bg-success/20 text-success',
+                                default    => 'bg-error/20 text-error'
+                            } ?>">
+                            <?= $ta['status'] ?>
+                        </span>
+                    </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+            <a href="dosen_bimbingan_ta.php" class="text-center text-xs text-primary font-bold mt-3 hover:underline">Kelola Bimbingan &rarr;</a>
+        </div>
+    </section>
+
+    <section class="lg:col-span-5 mt-stack-md flex flex-col">
+        <div class="glass-panel rounded-3xl p-stack-lg shadow-sm border border-white/40 flex-1 flex flex-col">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="font-headline-md text-headline-md text-secondary">Portofolio Tridharma</h3>
+                    <p class="text-on-surface-variant font-body-sm mt-1">Rekap publikasi & pengabdian.</p>
+                </div>
+                <span class="material-symbols-outlined text-secondary-container text-3xl">science</span>
+            </div>
+            
+            <div class="flex justify-around items-center bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/20 mb-4">
+                <div class="text-center">
+                    <p class="text-3xl font-black text-primary"><?= count($penelitian) ?></p>
+                    <p class="text-[10px] uppercase font-bold text-on-surface-variant">Penelitian</p>
+                </div>
+                <div class="w-px h-10 bg-outline-variant/30"></div>
+                <div class="text-center">
+                    <p class="text-3xl font-black text-secondary"><?= count($pengabdian) ?></p>
+                    <p class="text-[10px] uppercase font-bold text-on-surface-variant">Pengabdian</p>
+                </div>
+            </div>
+            
+            <a href="dosen_portofolio.php" class="w-full py-2.5 bg-secondary/10 text-secondary border border-secondary/20 rounded-xl text-sm font-bold hover:bg-secondary/20 transition-colors text-center mt-auto">
+                Kelola Portofolio
+            </a>
         </div>
     </section>
 

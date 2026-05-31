@@ -153,7 +153,17 @@ class MahasiswaRepository {
                 }
                 // --- End Validasi ---
 
-                // Cek apakah sudah ada (mencegah duplikat karena disetujui)
+                // Cek Kuota dan Kunci Baris (Pessimistic Locking)
+                $stmtQuota = $this->pdo->prepare("SELECT kuota, (SELECT COUNT(id) FROM krs WHERE matakuliah_id = ? AND dosen_id = ? AND semester_aktif = ? AND status != 'Ditolak') as terisi FROM jadwal_kelas WHERE matakuliah_id = ? AND dosen_id = ? FOR UPDATE");
+                $stmtQuota->execute([(int)$matakuliahId, (int)$dosenId, $semesterAktif, (int)$matakuliahId, (int)$dosenId]);
+                $quotaData = $stmtQuota->fetch();
+                
+                if ($quotaData && $quotaData['terisi'] >= $quotaData['kuota']) {
+                    $this->pdo->rollBack();
+                    return ['status' => false, 'error_msg' => "Mata Kuliah (ID $matakuliahId) kelas Dosen ID $dosenId sudah penuh."];
+                }
+
+                // Cek apakah sudah ada (mencegah duplikat)
                 $cek = $this->pdo->prepare("SELECT id FROM krs WHERE mahasiswa_id = ? AND dosen_id = ? AND matakuliah_id = ? AND semester_aktif = ?");
                 $cek->execute([$mahasiswaId, (int)$dosenId, (int)$matakuliahId, $semesterAktif]);
                 if (!$cek->fetch()) {
@@ -255,7 +265,6 @@ class MahasiswaRepository {
             foreach ($dataEdom as $krsId => $edom) {
                 $stmt->execute([(int)$krsId, (int)$edom['skala'], $edom['komentar']]);
             }
-
             Auth::logActivity($_SESSION['user_id'] ?? null, 'create', 'edom', null, "Mengisi EDOM", $this->pdo);
 
             $this->pdo->commit();
@@ -265,6 +274,40 @@ class MahasiswaRepository {
             error_log($e->getMessage());
             return false;
         }
+    }
+
+    // --- TUGAS AKHIR (MAHASISWA) ---
+    public function getTugasAkhir(int $mahasiswaId): ?array {
+        $stmt = $this->pdo->prepare("SELECT ta.*, d.nama as dosen_nama FROM tugas_akhir ta JOIN dosen d ON ta.dosen_id = d.id WHERE ta.mahasiswa_id = ? ORDER BY ta.created_at DESC LIMIT 1");
+        $stmt->execute([$mahasiswaId]);
+        $ta = $stmt->fetch();
+        return $ta ?: null;
+    }
+
+    public function submitTugasAkhir(int $mahasiswaId, int $dosenId, string $judul, string $deskripsi): bool {
+        // Cek jika sudah ada TA yang belum ditolak
+        $stmt = $this->pdo->prepare("SELECT id FROM tugas_akhir WHERE mahasiswa_id = ? AND status != 'Ditolak'");
+        $stmt->execute([$mahasiswaId]);
+        if ($stmt->fetch()) return false;
+
+        $stmt = $this->pdo->prepare("INSERT INTO tugas_akhir (mahasiswa_id, dosen_id, judul, deskripsi) VALUES (?, ?, ?, ?)");
+        return $stmt->execute([$mahasiswaId, $dosenId, $judul, $deskripsi]);
+    }
+
+    public function getLogbookTA(int $taId): array {
+        $stmt = $this->pdo->prepare("SELECT * FROM logbook_ta WHERE tugas_akhir_id = ? ORDER BY tanggal DESC");
+        $stmt->execute([$taId]);
+        return $stmt->fetchAll();
+    }
+
+    public function addLogbookTA(int $taId, int $mahasiswaId, string $tanggal, string $kegiatan): bool {
+        // Verify ownership
+        $stmt = $this->pdo->prepare("SELECT id FROM tugas_akhir WHERE id = ? AND mahasiswa_id = ?");
+        $stmt->execute([$taId, $mahasiswaId]);
+        if (!$stmt->fetch()) return false;
+
+        $stmt = $this->pdo->prepare("INSERT INTO logbook_ta (tugas_akhir_id, tanggal, kegiatan) VALUES (?, ?, ?)");
+        return $stmt->execute([$taId, $tanggal, $kegiatan]);
     }
 
     // --- LOGIKA PRESENSI ---
@@ -479,31 +522,6 @@ class MahasiswaRepository {
         return $stmt->fetchAll();
     }
 
-    // --- TUGAS AKHIR / SKRIPSI ---
-    public function getTugasAkhir(int $mahasiswaId): ?array {
-        $sql = "SELECT ta.*, d.nama as dosen_nama 
-                FROM tugas_akhir ta
-                JOIN dosen d ON ta.dosen_id = d.id
-                WHERE ta.mahasiswa_id = ?";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$mahasiswaId]);
-        $res = $stmt->fetch();
-        return $res ?: null;
-    }
-
-    public function ajukanTugasAkhir(int $mahasiswaId, int $dosenId, string $judul, string $deskripsi): bool {
-        $sql = "INSERT INTO tugas_akhir (mahasiswa_id, dosen_id, judul, deskripsi) VALUES (?, ?, ?, ?)";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([$mahasiswaId, $dosenId, $judul, $deskripsi]);
-    }
-
-    public function getLogbook(int $tugasAkhirId): array {
-        $sql = "SELECT * FROM logbook_ta WHERE tugas_akhir_id = ? ORDER BY tanggal DESC";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$tugasAkhirId]);
-        return $stmt->fetchAll();
-    }
-
     // --- TUGAS KULIAH & PENGUMPULAN ---
     public function getTugasKuliah(int $mahasiswaId, string $semester): array {
         // Ambil mata kuliah yang diambil mahasiswa (dari KRS) lalu gabung ke tugas_kuliah
@@ -702,5 +720,13 @@ class MahasiswaRepository {
         $stmt->execute([$mahasiswaId, $semester]);
         $status = $stmt->fetchColumn();
         return $status ?: 'Belum Diisi';
+    }
+
+    // --- PERWALIAN ---
+    public function getCatatanPerwalian(int $mahasiswaId, string $semester): ?string {
+        $stmt = $this->pdo->prepare("SELECT catatan FROM catatan_perwalian WHERE mahasiswa_id = ? AND semester = ? ORDER BY created_at DESC LIMIT 1");
+        $stmt->execute([$mahasiswaId, $semester]);
+        $res = $stmt->fetchColumn();
+        return $res ?: null;
     }
 }

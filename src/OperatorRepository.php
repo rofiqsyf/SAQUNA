@@ -20,7 +20,7 @@ class OperatorRepository {
                 FROM mahasiswa m 
                 JOIN users u ON m.user_id = u.id 
                 LEFT JOIN dosen d ON m.dosen_wali_id = d.id 
-                WHERE 1=1";
+                WHERE m.deleted_at IS NULL";
         $params = [];
 
         if (!empty($filters['search'])) {
@@ -185,12 +185,13 @@ class OperatorRepository {
             $stmt->execute([$mahasiswaId]);
             $user_id = $stmt->fetchColumn();
             
-            // Hapus di tabel mahasiswa
-            $stmtDel = $this->pdo->prepare("DELETE FROM mahasiswa WHERE id = ?");
+            // Hapus secara soft-delete di tabel mahasiswa (set deleted_at)
+            $stmtDel = $this->pdo->prepare("UPDATE mahasiswa SET deleted_at = NOW() WHERE id = ?");
             $stmtDel->execute([$mahasiswaId]);
             
-            // Hapus di tabel users jika ada
+            // Nonaktifkan di tabel users (atau hapus, tapi untuk menjaga integritas kita hapus/nonaktifkan)
             if ($user_id) {
+                // Hapus user agar tidak bisa login lagi, mahasiswa row tetap ada untuk historis KHS
                 $stmtUsr = $this->pdo->prepare("DELETE FROM users WHERE id = ?");
                 $stmtUsr->execute([$user_id]);
             }
@@ -341,6 +342,7 @@ class OperatorRepository {
                    COALESCE(semester_mk, 0) as semester,
                    COALESCE(kelas, '') as kelas
             FROM mata_kuliah 
+            WHERE deleted_at IS NULL
             ORDER BY prodi ASC, semester_mk ASC, kode ASC
         ");
         return $stmt->fetchAll();
@@ -356,6 +358,7 @@ class OperatorRepository {
             FROM mata_kuliah mk
             LEFT JOIN dosen_matakuliah dm ON mk.id = dm.matakuliah_id
             LEFT JOIN dosen d ON dm.dosen_id = d.id AND d.deleted_at IS NULL
+            WHERE mk.deleted_at IS NULL
             ORDER BY prodi ASC, semester ASC, mk.kode ASC
         ");
         $results = $stmt->fetchAll();
@@ -402,9 +405,7 @@ class OperatorRepository {
     }
 
     public function deleteMataKuliah(int $id): bool {
-        // Hapus relasi dosen_matakuliah dulu jika diperlukan (cascade mungkin sudah diset di DB, tapi untuk aman)
-        $this->pdo->prepare("DELETE FROM dosen_matakuliah WHERE matakuliah_id = ?")->execute([$id]);
-        $stmt = $this->pdo->prepare("DELETE FROM mata_kuliah WHERE id = ?");
+        $stmt = $this->pdo->prepare("UPDATE mata_kuliah SET deleted_at = NOW() WHERE id = ?");
         return $stmt->execute([$id]);
     }
 
@@ -706,5 +707,28 @@ class OperatorRepository {
     public function deleteOperator(int $id): bool {
         $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = ? AND role = 'operator'");
         return $stmt->execute([$id]);
+    }
+
+    // --- Manajemen Tridharma ---
+    public function getAllPenelitian(): array {
+        $stmt = $this->pdo->query("
+            SELECT p.*, d.nama as dosen_nama, d.nidn 
+            FROM dosen_penelitian p 
+            JOIN dosen d ON p.dosen_id = d.id 
+            WHERE p.deleted_at IS NULL 
+            ORDER BY p.tahun DESC, p.created_at DESC
+        ");
+        return $stmt->fetchAll();
+    }
+
+    public function getAllPengabdian(): array {
+        $stmt = $this->pdo->query("
+            SELECT p.*, d.nama as dosen_nama, d.nidn 
+            FROM dosen_pengabdian p 
+            JOIN dosen d ON p.dosen_id = d.id 
+            WHERE p.deleted_at IS NULL 
+            ORDER BY p.tahun DESC, p.created_at DESC
+        ");
+        return $stmt->fetchAll();
     }
 }

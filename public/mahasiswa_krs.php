@@ -27,6 +27,8 @@ foreach ($krsSaatIni as $k) {
 $kalenderRepo = new KalenderRepository();
 $isKrsOpen = $kalenderRepo->isKrsPeriodOpen();
 
+$catatanWali = $repo->getCatatanPerwalian($mhs['id'], $semesterAktif);
+
 $successMsg = '';
 $errorMsg = '';
 
@@ -80,6 +82,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isKrsOpen) {
                 <span class="material-symbols-outlined text-2xl">error</span> <?= htmlspecialchars($errorMsg) ?>
             </div>
         <?php endif; ?>
+    </section>
+    <?php endif; ?>
+
+    <?php if (!empty($catatanWali)): ?>
+    <section class="lg:col-span-12">
+        <div class="bg-primary/5 p-4 rounded-2xl mb-4 flex items-start gap-3 shadow-sm border border-primary/20">
+            <span class="material-symbols-outlined text-primary text-2xl mt-0.5">record_voice_over</span>
+            <div>
+                <h4 class="font-bold text-primary text-sm mb-1">Pesan dari Dosen Wali:</h4>
+                <p class="text-sm text-on-surface/90 italic">"<?= nl2br(htmlspecialchars($catatanWali)) ?>"</p>
+            </div>
+        </div>
     </section>
     <?php endif; ?>
 
@@ -226,6 +240,23 @@ document.addEventListener('DOMContentLoaded', function() {
     checkboxes.forEach(cb => {
         cb.addEventListener('change', hitungSKS);
     });
+
+    // Pencegah Double Submit
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // Jika sudah disabled (misal karena SKS berlebih), jangan biarkan submit
+            if (btnSubmit.disabled) {
+                e.preventDefault();
+                return;
+            }
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Sedang Menyimpan...';
+            // Tambahkan overlay redup pada form untuk indikasi visual
+            form.style.opacity = '0.6';
+            form.style.pointerEvents = 'none';
+        });
+    }
 
     // Hitung SKS awal saat halaman dimuat
     hitungSKS();

@@ -136,14 +136,15 @@ $tailwindConfig
             <a href="mahasiswa_tugas.php" class="<?= getLinkClass('mahasiswa_tugas.php', \$current_page) ?>"><span class="material-symbols-outlined">assignment</span><span class="font-body-lg text-body-lg">Tugas</span></a>
             <a href="mahasiswa_khs.php" class="<?= getLinkClass('mahasiswa_khs.php', \$current_page) ?>"><span class="material-symbols-outlined">grade</span><span class="font-body-lg text-body-lg">KHS</span></a>
             <a href="mahasiswa_transkrip.php" class="<?= getLinkClass('mahasiswa_transkrip.php', \$current_page) ?>"><span class="material-symbols-outlined">school</span><span class="font-body-lg text-body-lg">Transkrip</span></a>
-            <a href="mahasiswa_ta.php" class="<?= getLinkClass('mahasiswa_ta.php', \$current_page) ?>"><span class="material-symbols-outlined">history_edu</span><span class="font-body-lg text-body-lg">Skripsi (TA)</span></a>
+            <a href="mahasiswa_tugas_akhir.php" class="<?= getLinkClass('mahasiswa_tugas_akhir.php', \$current_page) ?>"><span class="material-symbols-outlined">history_edu</span><span class="font-body-lg text-body-lg">Skripsi (TA)</span></a>
             <a href="mahasiswa_tagihan.php" class="<?= getLinkClass('mahasiswa_tagihan.php', \$current_page) ?>"><span class="material-symbols-outlined">payments</span><span class="font-body-lg text-body-lg">UKT / SPP</span></a>
             <a href="mahasiswa_chat.php" class="<?= getLinkClass('mahasiswa_chat.php', \$current_page) ?>"><span class="material-symbols-outlined">chat</span><span class="font-body-lg text-body-lg">Pesan</span></a>
         <?php elseif (\$role === 'dosen'): ?>
             <a href="dosen_dashboard.php" class="<?= getLinkClass('dosen_dashboard.php', \$current_page) ?>"><span class="material-symbols-outlined">dashboard</span><span class="font-body-lg text-body-lg">Dashboard</span></a>
             <a href="dosen_krs.php" class="<?= getLinkClass('dosen_krs.php', \$current_page) ?>"><span class="material-symbols-outlined">fact_check</span><span class="font-body-lg text-body-lg">Perwalian KRS</span></a>
             <a href="dosen_tugas.php" class="<?= getLinkClass('dosen_tugas.php', \$current_page) ?>"><span class="material-symbols-outlined">assignment_turned_in</span><span class="font-body-lg text-body-lg">Penilaian Tugas</span></a>
-            <a href="dosen_ta.php" class="<?= getLinkClass('dosen_ta.php', \$current_page) ?>"><span class="material-symbols-outlined">history_edu</span><span class="font-body-lg text-body-lg">Bimbingan TA</span></a>
+            <a href="dosen_bimbingan_ta.php" class="<?= getLinkClass('dosen_bimbingan_ta.php', \$current_page) ?>"><span class="material-symbols-outlined">history_edu</span><span class="font-body-lg text-body-lg">Bimbingan TA</span></a>
+            <a href="dosen_portofolio.php" class="<?= getLinkClass('dosen_portofolio.php', \$current_page) ?>"><span class="material-symbols-outlined">science</span><span class="font-body-lg text-body-lg">Portofolio Tridharma</span></a>
             <a href="dosen_chat.php" class="<?= getLinkClass('dosen_chat.php', \$current_page) ?>"><span class="material-symbols-outlined">forum</span><span class="font-body-lg text-body-lg">Inbox</span></a>
         <?php elseif (\$role === 'operator'): ?>
             <a href="dashboard.php" class="<?= getLinkClass('dashboard.php', \$current_page) ?>"><span class="material-symbols-outlined">dashboard</span><span class="font-body-lg text-body-lg">Dashboard</span></a>

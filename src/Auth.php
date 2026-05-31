@@ -105,7 +105,22 @@ class Auth {
 
     public static function check(): bool {
         self::startSession();
-        return isset($_SESSION['user_id']);
+        if (!isset($_SESSION['user_id'])) return false;
+        
+        // Mitigasi Ghost Session: Pastikan user masih ada di database dan role-nya tidak berubah
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $dbRole = $stmt->fetchColumn();
+        
+        if (!$dbRole || $dbRole !== $_SESSION['role']) {
+            // Jika user dihapus oleh operator, atau role diubah, hancurkan session
+            $_SESSION = [];
+            session_destroy();
+            return false;
+        }
+        
+        return true;
     }
 
     public static function requireLogin(): void {

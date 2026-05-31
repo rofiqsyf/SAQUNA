@@ -809,4 +809,84 @@ class DosenRepository {
         }
         return $result;
     }
+
+    // --- TRIDHARMA (PENELITIAN & PENGABDIAN) ---
+    public function getPenelitianDosen(int $dosenId): array {
+        $stmt = $this->pdo->prepare("SELECT * FROM dosen_penelitian WHERE dosen_id = ? AND deleted_at IS NULL ORDER BY tahun DESC, created_at DESC");
+        $stmt->execute([$dosenId]);
+        return $stmt->fetchAll();
+    }
+
+    public function addPenelitian(int $dosenId, array $data): bool {
+        $stmt = $this->pdo->prepare("INSERT INTO dosen_penelitian (dosen_id, judul, tahun, link_publikasi, jenis) VALUES (?, ?, ?, ?, ?)");
+        return $stmt->execute([$dosenId, $data['judul'], $data['tahun'], $data['link_publikasi'] ?? null, $data['jenis']]);
+    }
+
+    public function deletePenelitian(int $id, int $dosenId): bool {
+        $stmt = $this->pdo->prepare("UPDATE dosen_penelitian SET deleted_at = NOW() WHERE id = ? AND dosen_id = ?");
+        return $stmt->execute([$id, $dosenId]);
+    }
+
+    public function getPengabdianDosen(int $dosenId): array {
+        $stmt = $this->pdo->prepare("SELECT * FROM dosen_pengabdian WHERE dosen_id = ? AND deleted_at IS NULL ORDER BY tahun DESC, created_at DESC");
+        $stmt->execute([$dosenId]);
+        return $stmt->fetchAll();
+    }
+
+    public function addPengabdian(int $dosenId, array $data): bool {
+        $stmt = $this->pdo->prepare("INSERT INTO dosen_pengabdian (dosen_id, judul, tahun, lokasi, deskripsi) VALUES (?, ?, ?, ?, ?)");
+        return $stmt->execute([$dosenId, $data['judul'], $data['tahun'], $data['lokasi'] ?? null, $data['deskripsi'] ?? null]);
+    }
+
+    public function deletePengabdian(int $id, int $dosenId): bool {
+        $stmt = $this->pdo->prepare("UPDATE dosen_pengabdian SET deleted_at = NOW() WHERE id = ? AND dosen_id = ?");
+        return $stmt->execute([$id, $dosenId]);
+    }
+
+    // --- BIMBINGAN TUGAS AKHIR (DOSEN) ---
+    public function getBimbinganTA(int $dosenId): array {
+        $stmt = $this->pdo->prepare("SELECT ta.*, m.nama as mahasiswa_nama, m.nim FROM tugas_akhir ta JOIN mahasiswa m ON ta.mahasiswa_id = m.id WHERE ta.dosen_id = ? ORDER BY ta.created_at DESC");
+        $stmt->execute([$dosenId]);
+        return $stmt->fetchAll();
+    }
+
+    public function updateStatusTABimbingan(int $taId, int $dosenId, string $status): bool {
+        $stmt = $this->pdo->prepare("UPDATE tugas_akhir SET status = ? WHERE id = ? AND dosen_id = ?");
+        return $stmt->execute([$status, $taId, $dosenId]);
+    }
+
+    public function getLogbookTABimbingan(int $taId, int $dosenId): array {
+        $stmt = $this->pdo->prepare("SELECT id FROM tugas_akhir WHERE id = ? AND dosen_id = ?");
+        $stmt->execute([$taId, $dosenId]);
+        if (!$stmt->fetch()) return [];
+
+        $stmt = $this->pdo->prepare("SELECT * FROM logbook_ta WHERE tugas_akhir_id = ? ORDER BY tanggal DESC");
+        $stmt->execute([$taId]);
+        return $stmt->fetchAll();
+    }
+
+    public function updateLogbookTABimbingan(int $logbookId, int $taId, int $dosenId, string $status, string $catatan): bool {
+        $stmt = $this->pdo->prepare("SELECT id FROM tugas_akhir WHERE id = ? AND dosen_id = ?");
+        $stmt->execute([$taId, $dosenId]);
+        if (!$stmt->fetch()) return false;
+
+        $stmt = $this->pdo->prepare("UPDATE logbook_ta SET status = ?, catatan_dosen = ? WHERE id = ? AND tugas_akhir_id = ?");
+        return $stmt->execute([$status, $catatan, $logbookId, $taId]);
+    }
+
+    public function updateStatusLogbookBimbingan(int $dosenId, int $logbookId, string $status, string $catatan): bool {
+        return $this->updateLogbookTABimbingan($logbookId, 0, $dosenId, $status, $catatan);
+    }
+
+    // --- CATATAN PERWALIAN ---
+    public function addCatatanPerwalian(int $dosenId, int $mahasiswaId, string $semester, string $catatan): bool {
+        $stmt = $this->pdo->prepare("INSERT INTO catatan_perwalian (dosen_wali_id, mahasiswa_id, semester, catatan) VALUES (?, ?, ?, ?)");
+        return $stmt->execute([$dosenId, $mahasiswaId, $semester, $catatan]);
+    }
+    
+    public function getCatatanPerwalian(int $dosenId, int $mahasiswaId, string $semester): array {
+        $stmt = $this->pdo->prepare("SELECT catatan, created_at FROM catatan_perwalian WHERE dosen_wali_id = ? AND mahasiswa_id = ? AND semester = ? ORDER BY created_at DESC");
+        $stmt->execute([$dosenId, $mahasiswaId, $semester]);
+        return $stmt->fetchAll();
+    }
 }

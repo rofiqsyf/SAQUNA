@@ -30,6 +30,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $error = "Gagal mengubah status KRS.";
             }
+        } elseif (isset($_POST['simpan_catatan'])) {
+            $mhsId = (int)$_POST['mahasiswa_id'];
+            $catatan = trim($_POST['catatan'] ?? '');
+            $semester = $_POST['semester'] ?? '';
+            
+            if (!empty($catatan) && !empty($semester)) {
+                if ($repo->addCatatanPerwalian($dosenId, $mhsId, $semester, $catatan)) {
+                    $success = "Catatan perwalian berhasil dikirim.";
+                } else {
+                    $error = "Gagal mengirim catatan perwalian.";
+                }
+            }
         }
         
         // Fitur validasi massal per mahasiswa
@@ -59,6 +71,7 @@ foreach ($semuaKrs as $k) {
         $groupedKrs[$mId] = [
             'nama' => $k['mhs_nama'],
             'nim' => $k['nim'],
+            'semester' => $k['semester_aktif'],
             'mata_kuliah' => []
         ];
     }
@@ -95,6 +108,15 @@ include 'components/header.php';
                         <button type="submit" name="status_massal" value="Ditolak" class="btn btn-sm btn-danger" onclick="return confirm('Tolak semua mata kuliah yang masih Menunggu untuk mahasiswa ini?')">Tolak Semua</button>
                     </form>
                 </div>
+                
+                <!-- Form Catatan Perwalian -->
+                <form method="POST" class="mb-4 bg-surface-container-low p-3 rounded-xl border border-outline-variant/30 flex gap-2">
+                    <?= Auth::csrfField() ?>
+                    <input type="hidden" name="mahasiswa_id" value="<?= $mhsId ?>">
+                    <input type="hidden" name="semester" value="<?= htmlspecialchars($data['semester']) ?>">
+                    <textarea name="catatan" class="input-text w-full text-sm p-2" rows="2" placeholder="Tinggalkan catatan untuk mahasiswa (contoh: 'Perbaiki IPK dulu baru ambil 24 SKS')" required></textarea>
+                    <button type="submit" name="simpan_catatan" class="btn-primary text-sm whitespace-nowrap self-end"><span class="material-symbols-outlined text-[16px]">send</span> Kirim Catatan</button>
+                </form>
                 
                 <div class="overflow-x-auto rounded-xl border border-outline-variant/30">
                     <table class="w-full text-left border-collapse">
