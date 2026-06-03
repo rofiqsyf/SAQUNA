@@ -282,8 +282,8 @@ function getLinkClass($page, $current) {
 
 <aside id="sidebar" role="navigation" aria-label="Menu Navigasi Utama" class="fixed left-0 top-0 h-screen w-72 z-40 bg-surface dark:bg-[#091f1a] flex flex-col shadow-2xl border-r border-outline-variant/30 dark:border-[#193a2e] transition-transform duration-300 -translate-x-full lg:translate-x-0">
     <div class="flex items-center gap-3 mb-8 px-6 pt-8">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-fixed flex items-center justify-center shadow-lg shadow-primary/20">
-            <span class="material-symbols-outlined text-white text-[22px]">school</span>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-fixed flex items-center justify-center shadow-lg shadow-primary/20 overflow-hidden">
+            <img src="assets/logo.png" alt="SAQUNA Logo" class="w-8 h-8 object-contain">
         </div>
         <div>
             <h1 class="font-bold tracking-wide text-primary dark:text-white" style="font-family: Outfit; font-size: 24px; line-height: 1;">SAQUNA</h1>

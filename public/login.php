@@ -68,8 +68,8 @@ if (Auth::check()) {
 <!-- TopAppBar Shell -->
 <nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter py-4 bg-glass-bg backdrop-blur-xl border-b border-glass-border shadow-mint-glow">
 <div class="flex items-center gap-2">
-    <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg">
-        <span class="material-symbols-outlined text-white text-[24px]">school</span>
+    <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg overflow-hidden">
+        <img src="assets/logo.png" alt="SAQUNA Logo" class="w-8 h-8 object-contain">
     </div>
     <div>
         <h1 class="font-bold text-primary tracking-tight" style="font-family: Outfit; font-size: 24px; line-height: 1;">SAQUNA</h1>
@@ -169,7 +169,7 @@ if (Auth::check()) {
 <footer class="w-full py-8 px-margin-page flex flex-col md:flex-row justify-between items-center gap-stack-md bg-transparent mt-auto relative z-10">
 <div class="flex flex-col items-center md:items-start gap-1">
 <div class="flex items-center gap-2">
-    <span class="material-symbols-outlined text-secondary text-[24px]">school</span>
+    <img src="assets/logo.png" alt="SAQUNA Logo" class="w-6 h-6 object-contain">
     <span class="font-title-lg text-title-lg font-bold text-secondary" style="line-height: 1;">SAQUNA</span>
 </div>
 <p class="text-on-surface-variant opacity-75 font-medium text-center md:text-left" style="font-size: 11px; line-height: 1.3; max-width: 200px; letter-spacing: 0.2px;">Sistem Akademik Universitas Sains Al-Qur'an</p>
